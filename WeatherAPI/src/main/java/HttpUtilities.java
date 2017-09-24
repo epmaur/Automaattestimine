@@ -5,14 +5,11 @@ import java.util.Random;
  */
 public class HttpUtilities {
 
-    public static int getResponseStatusCode() {
+    public int getResponseStatusCode() {
         Integer [] statusCodes = new Integer[] {200, 404, 418};
         Random generator = new Random();
         int randomArrayIndex = generator.nextInt(statusCodes.length);
         return statusCodes[randomArrayIndex];
     }
 
-    public static void main(String[] args) {
-        System.out.println(getResponseStatusCode());
-    }
 }

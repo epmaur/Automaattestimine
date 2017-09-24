@@ -20,25 +20,25 @@ public class JsonResponseTest {
     private JSONObject jsonResponseAll;
     private JSONObject jsonResponseCoordinates;
     private JSONObject jsonResponseForecast;
-    private JSONObject jsonResponseForecastTomorrow;
-    private JSONObject jsonResponseForecastSecondDay;
-    private JSONObject jsonResponseForecastThirdDay;
+    private JSONObject jsonResponseForecastDayOne;
+    private JSONObject jsonResponseForecastDayTwo;
+    private JSONObject jsonResponseForecastDayThree;
 
 
     @Before
     public void initObjects() {
         parser = new JSONParser();
         try {
-            //Temporarily using a json file for response
+            //Temporarily using an example json file for testing
             jsonResponseAll = (JSONObject) parser.parse(new FileReader(getClass().getResource("exampleJSON.txt").getFile()));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
         jsonResponseCoordinates = (JSONObject) jsonResponseAll.get("coordinates");
         jsonResponseForecast = (JSONObject) jsonResponseAll.get("forecast");
-        jsonResponseForecastTomorrow = (JSONObject) jsonResponseForecast.get("tomorrow");
-        jsonResponseForecastSecondDay = (JSONObject) jsonResponseForecast.get("secondDay");
-        jsonResponseForecastThirdDay = (JSONObject) jsonResponseForecast.get("thirdDay");
+        jsonResponseForecastDayOne = (JSONObject) jsonResponseForecast.get("dayOne");
+        jsonResponseForecastDayTwo = (JSONObject) jsonResponseForecast.get("dayTwo");
+        jsonResponseForecastDayThree = (JSONObject) jsonResponseForecast.get("dayThree");
     }
 
     @Test
@@ -49,8 +49,8 @@ public class JsonResponseTest {
 
     @Test
     public void testIfResponseContainsTemperatureNow() {
-        boolean hasTemperatureKey = jsonResponseAll.containsKey("temperature");
-        assertEquals(hasTemperatureKey, true);
+        boolean hasTemperatureNowKey = jsonResponseAll.containsKey("temperatureNow");
+        assertEquals(hasTemperatureNowKey, true);
     }
 
     @Test
@@ -63,9 +63,9 @@ public class JsonResponseTest {
 
     @Test
     public void testIfResponseContainsThreeDayForecast() {
-        boolean hasNextDayForecast = jsonResponseForecast.containsKey("tomorrow");
-        boolean hasSecondDayForecast = jsonResponseForecast.containsKey("secondDay");
-        boolean hasThirdDayForecast = jsonResponseForecast.containsKey("thirdDay");
+        boolean hasNextDayForecast = jsonResponseForecast.containsKey("dayOne");
+        boolean hasSecondDayForecast = jsonResponseForecast.containsKey("dayTwo");
+        boolean hasThirdDayForecast = jsonResponseForecast.containsKey("dayThree");
         assertEquals(hasNextDayForecast, true);
         assertEquals(hasSecondDayForecast, true);
         assertEquals(hasThirdDayForecast, true);
@@ -73,8 +73,8 @@ public class JsonResponseTest {
 
     @Test
     public void testIfResponseForecastContainsAllKeys() {
-        JSONObject [] forecastDays = new JSONObject [] {jsonResponseForecastTomorrow, jsonResponseForecastSecondDay,
-                jsonResponseForecastThirdDay};
+        JSONObject [] forecastDays = new JSONObject [] {jsonResponseForecastDayOne, jsonResponseForecastDayTwo,
+                jsonResponseForecastDayThree};
         for (JSONObject forecastDay : forecastDays) {
             assertEquals(forecastDay.containsKey("description"), true);
             assertEquals(forecastDay.containsKey("highestTemp"), true);
@@ -84,13 +84,13 @@ public class JsonResponseTest {
 
     @Test
     public void testIfTemperaturesAreReasonable() {
-        long temperatureNow = (long) jsonResponseAll.get("temperature");
-        long highestTempNextDay = (long) jsonResponseForecastTomorrow.get("highestTemp");
-        long lowestTempNextDay = (long) jsonResponseForecastTomorrow.get("lowestTemp");
-        long highestTempSecondDay = (long) jsonResponseForecastSecondDay.get("highestTemp");
-        long lowestTempSecondDay = (long) jsonResponseForecastSecondDay.get("lowestTemp");
-        long highestTempThirdDay = (long) jsonResponseForecastThirdDay.get("highestTemp");
-        long lowestTempThirdDay = (long) jsonResponseForecastThirdDay.get("lowestTemp");
+        long temperatureNow = (long) jsonResponseAll.get("temperatureNow");
+        long highestTempNextDay = (long) jsonResponseForecastDayOne.get("highestTemp");
+        long lowestTempNextDay = (long) jsonResponseForecastDayOne.get("lowestTemp");
+        long highestTempSecondDay = (long) jsonResponseForecastDayTwo.get("highestTemp");
+        long lowestTempSecondDay = (long) jsonResponseForecastDayTwo.get("lowestTemp");
+        long highestTempThirdDay = (long) jsonResponseForecastDayThree.get("highestTemp");
+        long lowestTempThirdDay = (long) jsonResponseForecastDayThree.get("lowestTemp");
         Long [] temperatures = new Long[] {temperatureNow, highestTempNextDay, lowestTempNextDay,
                 highestTempSecondDay, lowestTempSecondDay, highestTempThirdDay, lowestTempThirdDay};
         for (long temperature : temperatures) {
