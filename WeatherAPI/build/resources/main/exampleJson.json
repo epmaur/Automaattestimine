@@ -1,0 +1,25 @@
+{
+  "city": "Tallinn",
+  "temperature": 13,
+  "coordinates": {
+    "latitude":59.436961,
+    "longitude":24.753575
+  },
+  "forecast": {
+    "tomorrow": {
+      "description":"cloudy",
+      "highestTemp":15,
+      "lowestTemp":10
+    },
+    "secondDay": {
+      "description":"cloudy",
+      "highestTemp":15,
+      "lowestTemp":10
+    },
+    "thirdDay": {
+      "description":"cloudy",
+      "highestTemp":15,
+      "lowestTemp":10
+    }
+  }
+}
