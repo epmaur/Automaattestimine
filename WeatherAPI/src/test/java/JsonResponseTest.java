@@ -30,7 +30,7 @@ public class JsonResponseTest {
         parser = new JSONParser();
         try {
             //Temporarily using a json file for response
-            jsonResponseAll = (JSONObject) parser.parse(new FileReader("C:/Users/Epu/Desktop/json.txt"));
+            jsonResponseAll = (JSONObject) parser.parse(new FileReader(getClass().getResource("exampleJSON.txt").getFile()));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
