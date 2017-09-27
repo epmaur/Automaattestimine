@@ -1,23 +1,23 @@
 {
   "lastModified": "2017-09-24T20:55:26.327",
   "city": "Tallinn",
-  "temperature": 13,
+  "temperatureNow": 13,
   "coordinates": {
     "latitude":59.436961,
     "longitude":24.753575
   },
   "forecast": {
-    "tomorrow": {
+    "dayOne": {
       "description":"cloudy",
       "highestTemp":15,
       "lowestTemp":10
     },
-    "secondDay": {
+    "dayTwo": {
       "description":"cloudy",
       "highestTemp":15,
       "lowestTemp":10
     },
-    "thirdDay": {
+    "dayThree": {
       "description":"cloudy",
       "highestTemp":15,
       "lowestTemp":10
