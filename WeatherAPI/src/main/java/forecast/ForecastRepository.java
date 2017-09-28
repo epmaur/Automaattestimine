@@ -40,17 +40,27 @@ public class ForecastRepository {
         return url.toString();
     }
 
-    public static JSONObject makeForecastRequest(WeatherRequest weatherRequest) throws IOException, ParseException {
+    public static JSONObject makeForecastRequest(WeatherRequest weatherRequest) {
         String url = buildForecastURL(weatherRequest);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpRequest = new HttpGet(url);
-        HttpResponse response = client.execute(httpRequest);
+        HttpResponse response = null;
+        try {
+            response = client.execute(httpRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
         return jsonObject;
     }
 
-    public static ForecastReport makeJSONResponseIntoForecastReport(WeatherRequest weatherRequest) throws IOException, ParseException {
+    public static ForecastReport makeJSONResponseIntoForecastReport(WeatherRequest weatherRequest){
         JSONObject forecastReportInJason = makeForecastRequest(weatherRequest);
         JSONObject cityObject = (JSONObject) forecastReportInJason.get("city");
         JSONObject coord = (JSONObject) cityObject.get("coord");

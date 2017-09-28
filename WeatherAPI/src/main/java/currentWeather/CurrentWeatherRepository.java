@@ -39,17 +39,27 @@ public class CurrentWeatherRepository {
         return url.toString();
     }
 
-    public static JSONObject makeCurrentWeatherRequest(WeatherRequest weatherRequest) throws IOException, ParseException {
+    public static JSONObject makeCurrentWeatherRequest(WeatherRequest weatherRequest) {
         String url = buildCurrentWeatherURL(weatherRequest);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpRequest = new HttpGet(url);
-        HttpResponse response = client.execute(httpRequest);
+        HttpResponse response = null;
+        try {
+            response = client.execute(httpRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
         return jsonObject;
     }
 
-    public static CurrentWeatherReport makeJSONResponseIntoWeatherReport(WeatherRequest weatherRequest) throws IOException, ParseException {
+    public static CurrentWeatherReport makeJSONResponseIntoWeatherReport(WeatherRequest weatherRequest) {
         JSONObject weatherReportInJson = makeCurrentWeatherRequest(weatherRequest);
         JSONObject sys = (JSONObject) weatherReportInJson.get("sys");
         JSONObject main = (JSONObject) weatherReportInJson.get("main");
@@ -62,5 +72,5 @@ public class CurrentWeatherRepository {
         CurrentWeatherReport currentWeatherReport = new CurrentWeatherReport(city, country, temp, latitude, longitude);
         return currentWeatherReport;
     }
-    
+
 }
