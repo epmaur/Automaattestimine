@@ -1,3 +1,5 @@
+package forecast;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -7,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import weatherRequest.WeatherRequest;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,30 +53,30 @@ public class ForecastRepository {
     public static ForecastReport makeJSONResponseIntoForecastReport(WeatherRequest weatherRequest) throws IOException, ParseException {
         JSONObject forecastReportInJason = makeForecastRequest(weatherRequest);
         JSONObject cityObject = (JSONObject) forecastReportInJason.get("city");
-        JSONObject coord = (JSONObject) forecastReportInJason.get("coord");
-        long latitude = (long) coord.get("lat");
-        long longitude = (long) coord.get("lon");
+        JSONObject coord = (JSONObject) cityObject.get("coord");
+        double latitude = (double) coord.get("lat");
+        double longitude = (double) coord.get("lon");
         String cityName = (String) cityObject.get("name");
-        String country = (String) forecastReportInJason.get("country");
-        SingleDayReport dayOne = makeSingleDayReport(forecastReportInJason, 1);
-        SingleDayReport dayTwo = makeSingleDayReport(forecastReportInJason, 2);
-        SingleDayReport dayThree = makeSingleDayReport(forecastReportInJason, 3);
+        String country = (String) cityObject.get("country");
+        ForecastOneDayReport dayOne = makeSingleDayReport(forecastReportInJason, 1);
+        ForecastOneDayReport dayTwo = makeSingleDayReport(forecastReportInJason, 2);
+        ForecastOneDayReport dayThree = makeSingleDayReport(forecastReportInJason, 3);
         ForecastReport forecastReport = new ForecastReport(cityName, country, longitude, latitude, dayOne, dayTwo, dayThree);
         return forecastReport;
     }
 
-    public static SingleDayReport makeSingleDayReport (JSONObject forecastObject, int day) {
+    public static ForecastOneDayReport makeSingleDayReport (JSONObject forecastObject, int day) {
         int dayOfMonthToday = (new Timestamp(System.currentTimeMillis())).toLocalDateTime().getDayOfMonth();
         JSONArray forecast = (JSONArray) forecastObject.get("list");
-        long previousMaxTemp = Integer.MIN_VALUE;
-        long previousMinTemp = Integer.MAX_VALUE;
+        double previousMaxTemp = Integer.MIN_VALUE;
+        double previousMinTemp = Integer.MAX_VALUE;
 
         for (int i = 0; i < forecast.size(); i++) {
             JSONObject singleForecast = (JSONObject) forecast.get(i);
-            Timestamp timestamp = (Timestamp) singleForecast.get("dt");
+            Timestamp timestamp = new Timestamp((Long) singleForecast.get("dt"));
             JSONObject main = (JSONObject) singleForecast.get("main");
-            long minTemp = (long) main.get("temp_min");
-            long maxTemp = (long) main.get("temp_max");
+            double minTemp = (double) main.get("temp_min");
+            double maxTemp = (double) main.get("temp_max");
             int numberOfDaysFromToday = timestamp.toLocalDateTime().getDayOfMonth() - dayOfMonthToday;
             if (numberOfDaysFromToday == day) {
                 if (minTemp < previousMinTemp) {
@@ -84,7 +87,7 @@ public class ForecastRepository {
                 }
             }
         }
-        SingleDayReport singleDayReport = new SingleDayReport(previousMaxTemp, previousMinTemp);
+        ForecastOneDayReport singleDayReport = new ForecastOneDayReport(previousMaxTemp, previousMinTemp);
         return singleDayReport;
     }
 

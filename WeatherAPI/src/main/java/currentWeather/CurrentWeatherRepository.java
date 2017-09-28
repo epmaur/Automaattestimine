@@ -1,3 +1,5 @@
+package currentWeather;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -6,6 +8,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import weatherRequest.WeatherRequest;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,12 +56,11 @@ public class CurrentWeatherRepository {
         JSONObject coord = (JSONObject) weatherReportInJson.get("coord");
         String city = (String) weatherReportInJson.get("name");
         String country = (String) sys.get("country");
-        long temp = (long) main.get("temp");
-        long longitude = (long) coord.get("lon");
-        long latitude = (long) coord.get("lat");
+        double temp = (double) main.get("temp");
+        double longitude = (double) coord.get("lon");
+        double latitude = (double) coord.get("lat");
         CurrentWeatherReport currentWeatherReport = new CurrentWeatherReport(city, country, temp, latitude, longitude);
         return currentWeatherReport;
     }
-
-
+    
 }
