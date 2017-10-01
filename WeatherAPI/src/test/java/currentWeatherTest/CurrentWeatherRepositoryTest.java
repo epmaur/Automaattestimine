@@ -18,16 +18,13 @@ public class CurrentWeatherRepositoryTest {
     private WeatherRequest weatherRequest;
     private CurrentWeatherRepository currentWeatherRepository;
     private CurrentWeatherReport currentWeatherReport;
-    private double longitudeOfTallinn;
-    private double latitudeOfTallinn;
+
 
     @Before
     public void initObjects() throws IOException, ParseException {
-        weatherRequest = new WeatherRequest("Tallinn","EE");
+        weatherRequest = new WeatherRequest("Tallinn","EE", "metric");
         currentWeatherRepository = new CurrentWeatherRepository();
         currentWeatherReport = currentWeatherRepository.makeJSONResponseIntoWeatherReport(weatherRequest);
-        longitudeOfTallinn = 24.7535;
-        latitudeOfTallinn = 59.437;
     }
 
     @Test
@@ -50,5 +47,20 @@ public class CurrentWeatherRepositoryTest {
     public  void testIfResponseContainsTemperature() {
         assertNotEquals(null, currentWeatherReport.getTemp());
     }
+
+    @Test
+    public void testIfCoordinatesAreValid() {
+        boolean latitudeIsValid = currentWeatherReport.getLatitude() <= 90 && currentWeatherReport.getLatitude() >= -90;
+        boolean longitudeIsValid = currentWeatherReport.getLongitude() <= 180 && currentWeatherReport.getLongitude() >= -180;
+        assertEquals(true, latitudeIsValid);
+        assertEquals(true, longitudeIsValid);
+    }
+
+    @Test
+    public void testIfTemperaturesAreValid() {
+        boolean temperatureIsValid = currentWeatherReport.getTemp() > -100 && currentWeatherReport.getTemp() < 100;
+        assertEquals(true, temperatureIsValid);
+    }
+
 
 }

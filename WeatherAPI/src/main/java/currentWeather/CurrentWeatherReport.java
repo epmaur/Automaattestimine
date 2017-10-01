@@ -37,4 +37,15 @@ public class CurrentWeatherReport {
     public double getLongitude() {
         return longitude;
     }
+
+    @Override
+    public String toString() {
+        return "CurrentWeatherReport{" +
+                "city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", temp=" + temp +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 public class HttpUtilities {
 
 
-    public static int getResponseStatusCode(String url) {
+    public int getResponseStatusCode(String url) {
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url);
         HttpResponse response = null;

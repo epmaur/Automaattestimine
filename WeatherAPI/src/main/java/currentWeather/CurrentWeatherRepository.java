@@ -23,13 +23,14 @@ public class CurrentWeatherRepository {
     public static final String APIKey = "24f99e919834ab7ccbf49162e4fc38a4";
 
 
-    public static String buildCurrentWeatherURL(WeatherRequest request) {
+    public String buildCurrentWeatherURL(WeatherRequest request) {
         URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("api.openweathermap.org")
                 .setPath("/data/2.5/weather")
                 .addParameter("q", request.getCity() + "," + request.getCountry())
-                .addParameter("APPID", APIKey);
+                .addParameter("APPID", APIKey)
+                .addParameter("units", request.getFormat());
         URL url = null;
         try {
             url = builder.build().toURL();
@@ -39,7 +40,7 @@ public class CurrentWeatherRepository {
         return url.toString();
     }
 
-    public static JSONObject makeCurrentWeatherRequest(WeatherRequest weatherRequest) {
+    public JSONObject makeCurrentWeatherRequest(WeatherRequest weatherRequest) {
         String url = buildCurrentWeatherURL(weatherRequest);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpRequest = new HttpGet(url);
@@ -59,14 +60,14 @@ public class CurrentWeatherRepository {
         return jsonObject;
     }
 
-    public static CurrentWeatherReport makeJSONResponseIntoWeatherReport(WeatherRequest weatherRequest) {
+    public CurrentWeatherReport makeJSONResponseIntoWeatherReport(WeatherRequest weatherRequest) {
         JSONObject weatherReportInJson = makeCurrentWeatherRequest(weatherRequest);
         JSONObject sys = (JSONObject) weatherReportInJson.get("sys");
         JSONObject main = (JSONObject) weatherReportInJson.get("main");
         JSONObject coord = (JSONObject) weatherReportInJson.get("coord");
         String city = (String) weatherReportInJson.get("name");
         String country = (String) sys.get("country");
-        double temp = (double) main.get("temp");
+        long temp = (long) main.get("temp");
         double longitude = (double) coord.get("lon");
         double latitude = (double) coord.get("lat");
         CurrentWeatherReport currentWeatherReport = new CurrentWeatherReport(city, country, temp, latitude, longitude);

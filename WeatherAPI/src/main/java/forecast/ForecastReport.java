@@ -49,4 +49,5 @@ public class ForecastReport {
     public ForecastOneDayReport getDayThree() {
         return dayThree;
     }
+
 }

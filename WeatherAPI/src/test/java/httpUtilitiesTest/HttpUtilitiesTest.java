@@ -18,25 +18,27 @@ public class HttpUtilitiesTest {
     private String currentWeatherUrl;
     private ForecastRepository forecastRepository;
     private String forecastUrl;
+    private HttpUtilities httpUtilities;
 
 
     @Before
     public void initObjects() {
-        weatherRequest = new WeatherRequest("Tallinn", "EE");
+        weatherRequest = new WeatherRequest("Tallinn", "EE", "metric");
         currentWeatherRepository = new CurrentWeatherRepository();
         currentWeatherUrl =currentWeatherRepository.buildCurrentWeatherURL(weatherRequest);
         forecastRepository = new ForecastRepository();
         forecastUrl = forecastRepository.buildForecastURL(weatherRequest);
+        httpUtilities = new HttpUtilities();
     }
 
     @Test
     public void testIfCurrentWeatherResponseStatusCodeIsOK() {
-        assertEquals(200, HttpUtilities.getResponseStatusCode(currentWeatherUrl));
+        assertEquals(200, httpUtilities.getResponseStatusCode(currentWeatherUrl));
     }
 
     @Test
     public void testIfWeatherForecastResponseStatusCodeIsOK() {
-        assertEquals(200, HttpUtilities.getResponseStatusCode(forecastUrl));
+        assertEquals(200, httpUtilities.getResponseStatusCode(forecastUrl));
     }
 
 }

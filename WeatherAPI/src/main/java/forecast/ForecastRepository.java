@@ -24,13 +24,14 @@ import java.sql.Timestamp;
 public class ForecastRepository {
     public static final String APIKey = "24f99e919834ab7ccbf49162e4fc38a4";
 
-    public static String buildForecastURL(WeatherRequest weatherRequest) {
+    public String buildForecastURL(WeatherRequest weatherRequest) {
         URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost("api.openweathermap.org")
                 .setPath("/data/2.5/forecast")
                 .addParameter("q", weatherRequest.getCity() + "," + weatherRequest.getCountry())
-                .addParameter("APPID", APIKey);
+                .addParameter("APPID", APIKey)
+                .addParameter("units", weatherRequest.getFormat());
         URL url = null;
         try {
             url = builder.build().toURL();
@@ -40,7 +41,7 @@ public class ForecastRepository {
         return url.toString();
     }
 
-    public static JSONObject makeForecastRequest(WeatherRequest weatherRequest) {
+    public JSONObject makeForecastRequest(WeatherRequest weatherRequest) {
         String url = buildForecastURL(weatherRequest);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpRequest = new HttpGet(url);
@@ -60,7 +61,7 @@ public class ForecastRepository {
         return jsonObject;
     }
 
-    public static ForecastReport makeJSONResponseIntoForecastReport(WeatherRequest weatherRequest){
+    public ForecastReport makeJSONResponseIntoForecastReport(WeatherRequest weatherRequest){
         JSONObject forecastReportInJason = makeForecastRequest(weatherRequest);
         JSONObject cityObject = (JSONObject) forecastReportInJason.get("city");
         JSONObject coord = (JSONObject) cityObject.get("coord");
@@ -75,18 +76,19 @@ public class ForecastRepository {
         return forecastReport;
     }
 
-    public static ForecastOneDayReport makeSingleDayReport (JSONObject forecastObject, int day) {
+    public ForecastOneDayReport makeSingleDayReport (JSONObject forecastObject, int day) {
         int dayOfMonthToday = (new Timestamp(System.currentTimeMillis())).toLocalDateTime().getDayOfMonth();
         JSONArray forecast = (JSONArray) forecastObject.get("list");
         double previousMaxTemp = Integer.MIN_VALUE;
         double previousMinTemp = Integer.MAX_VALUE;
-
         for (int i = 0; i < forecast.size(); i++) {
             JSONObject singleForecast = (JSONObject) forecast.get(i);
-            Timestamp timestamp = new Timestamp((Long) singleForecast.get("dt"));
+            Timestamp timestamp = new Timestamp((Long) singleForecast.get("dt") * 1000);
             JSONObject main = (JSONObject) singleForecast.get("main");
-            double minTemp = (double) main.get("temp_min");
-            double maxTemp = (double) main.get("temp_max");
+            Object minTempObj = main.get("temp_min");
+            Object maxTempObj = main.get("temp_max");
+            double minTemp = new Double(minTempObj.toString());
+            double maxTemp = new Double(maxTempObj.toString());
             int numberOfDaysFromToday = timestamp.toLocalDateTime().getDayOfMonth() - dayOfMonthToday;
             if (numberOfDaysFromToday == day) {
                 if (minTemp < previousMinTemp) {
