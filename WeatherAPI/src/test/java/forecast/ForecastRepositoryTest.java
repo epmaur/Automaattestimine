@@ -1,7 +1,5 @@
-package forecastTest;
+package forecast;
 
-import forecast.ForecastReport;
-import forecast.ForecastRepository;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,14 +50,33 @@ public class ForecastRepositoryTest {
     }
 
     @Test
-    public void testIfResponseForecastDaysContainMaxAndMinTemp() {
-        assertNotEquals(null, forecastReport.getDayOne().getMinTemp());
+    public void testIfResponseForecastDayOneContainsMaxTemp() {
         assertNotEquals(null, forecastReport.getDayOne().getMaxTemp());
-        assertNotEquals(null, forecastReport.getDayTwo().getMinTemp());
+    }
+
+    @Test
+    public void testIfResponseForecastDayOneContainsMinTemp() {
+        assertNotEquals(null, forecastReport.getDayOne().getMinTemp());
+    }
+
+    @Test
+    public void testIfResponseForecastDayTwoContainsMaxTemp() {
         assertNotEquals(null, forecastReport.getDayTwo().getMaxTemp());
-        assertNotEquals(null, forecastReport.getDayThree().getMinTemp());
+    }
+    @Test
+    public void testIfResponseForecastDayTwoContainsMinTemp() {
+        assertNotEquals(null, forecastReport.getDayTwo().getMinTemp());
+    }
+
+    @Test
+    public void testIfResponseForecastDayThreeContainsMaxTemp() {
         assertNotEquals(null, forecastReport.getDayThree().getMaxTemp());
     }
+    @Test
+    public void testIfResponseForecastDayThreeContainsMinTemp() {
+        assertNotEquals(null, forecastReport.getDayThree().getMinTemp());
+    }
+
 
     @Test
     public void testIfCoordinatesAreValid() {
@@ -70,21 +87,41 @@ public class ForecastRepositoryTest {
     }
 
     @Test
-    public void testIfTemperaturesAreValid() {
-
-        boolean dayOneMinTempIsValid = forecastReport.getDayOne().getMinTemp() > -100 && forecastReport.getDayOne().getMinTemp() < 100;
+    public void testIfDayOneMaxTempIsValid() {
         boolean dayOneMaxTempIsValid = forecastReport.getDayOne().getMaxTemp() > -100 && forecastReport.getDayOne().getMaxTemp() < 100;
-        boolean dayTwoMinTempIsValid = forecastReport.getDayTwo().getMinTemp() > -100 && forecastReport.getDayTwo().getMinTemp() < 100;
-        boolean dayTwoMaxTempIsValid = forecastReport.getDayTwo().getMaxTemp() > -100 && forecastReport.getDayTwo().getMaxTemp() < 100;
-        boolean dayThreeMinTempIsValid = forecastReport.getDayThree().getMinTemp() > -100 && forecastReport.getDayThree().getMinTemp() < 100;
-        boolean dayThreeMaxTempIsValid = forecastReport.getDayThree().getMaxTemp() > -100 && forecastReport.getDayThree().getMaxTemp() < 100;
-
-        assertEquals(true, dayOneMinTempIsValid);
         assertEquals(true, dayOneMaxTempIsValid);
-        assertEquals(true, dayTwoMinTempIsValid);
+
+    }
+
+    @Test
+    public void testIfDayOneMinTempIsValid() {
+        boolean dayOneMinTempIsValid = forecastReport.getDayOne().getMinTemp() > -100 && forecastReport.getDayOne().getMinTemp() < 100;
+        assertEquals(true, dayOneMinTempIsValid);
+
+    }
+
+    @Test
+    public void testIfDayTwoMaxTempIsValid() {
+        boolean dayTwoMaxTempIsValid = forecastReport.getDayTwo().getMaxTemp() > -100 && forecastReport.getDayTwo().getMaxTemp() < 100;
         assertEquals(true, dayTwoMaxTempIsValid);
-        assertEquals(true, dayThreeMinTempIsValid);
+    }
+
+    @Test
+    public void testIfDayTwoMinTempIsValid() {
+        boolean dayTwoMinTempIsValid = forecastReport.getDayTwo().getMinTemp() > -100 && forecastReport.getDayTwo().getMinTemp() < 100;
+        assertEquals(true, dayTwoMinTempIsValid);
+    }
+
+    @Test
+    public void testIfDayThreeMaxTempIsValid() {
+        boolean dayThreeMaxTempIsValid = forecastReport.getDayThree().getMaxTemp() > -100 && forecastReport.getDayThree().getMaxTemp() < 100;
         assertEquals(true, dayThreeMaxTempIsValid);
+    }
+
+    @Test
+    public void testIfDayThreeMinTempIsValid() {
+        boolean dayThreeMinTempIsValid = forecastReport.getDayThree().getMinTemp() > -100 && forecastReport.getDayThree().getMinTemp() < 100;
+        assertEquals(true, dayThreeMinTempIsValid);
     }
 
 }

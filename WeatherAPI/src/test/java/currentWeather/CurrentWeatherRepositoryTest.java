@@ -1,7 +1,5 @@
-package currentWeatherTest;
+package currentWeather;
 
-import currentWeather.CurrentWeatherReport;
-import currentWeather.CurrentWeatherRepository;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +55,7 @@ public class CurrentWeatherRepositoryTest {
     }
 
     @Test
-    public void testIfTemperaturesAreValid() {
+    public void testIfTemperatureIsValid() {
         boolean temperatureIsValid = currentWeatherReport.getTemp() > -100 && currentWeatherReport.getTemp() < 100;
         assertEquals(true, temperatureIsValid);
     }
