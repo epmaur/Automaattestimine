@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Epu on 28.09.2017.
@@ -21,7 +22,11 @@ public class ForecastRepositoryTest {
 
     @Before
     public void initObjects() throws IOException, ParseException {
-        weatherRequest = new WeatherRequest("Tallinn","EE", "metric");
+        //weatherRequest = new WeatherRequest("Tallinn","EE", "metric");
+        weatherRequest = mock(WeatherRequest.class);
+        when(weatherRequest.getCity()).thenReturn("Tallinn");
+        when(weatherRequest.getCountry()).thenReturn("EE");
+        when(weatherRequest.getUnit()).thenReturn("metric");
         forecastRepository = new ForecastRepository();
         forecastReport = forecastRepository.makeJSONResponseIntoForecastReport(weatherRequest);
     }
@@ -32,7 +37,7 @@ public class ForecastRepositoryTest {
     }
 
     @Test
-    public void testIfResponseCountryMatchesRequeestCountry() {
+    public void testIfResponseCountryMatchesRequestCountry() {
         assertEquals(weatherRequest.getCountry(), forecastReport.getCountry());
     }
 
@@ -123,5 +128,7 @@ public class ForecastRepositoryTest {
         boolean dayThreeMinTempIsValid = forecastReport.getDayThree().getMinTemp() > -100 && forecastReport.getDayThree().getMinTemp() < 100;
         assertEquals(true, dayThreeMinTempIsValid);
     }
+
+
 
 }

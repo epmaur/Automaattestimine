@@ -1,4 +1,4 @@
-package httpUtilities;
+package utilities;
 
 import currentWeather.CurrentWeatherRepository;
 import forecast.ForecastRepository;

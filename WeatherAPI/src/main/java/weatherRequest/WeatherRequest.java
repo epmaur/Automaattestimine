@@ -6,12 +6,12 @@ package weatherRequest;
 public class WeatherRequest {
     private String city;
     private String country;
-    private String format;
+    private String unit;
 
-    public WeatherRequest(String city, String country, String format) {
+    public WeatherRequest(String city, String country, String unit) {
         this.city = city;
         this.country = country;
-        this.format = format;
+        this.unit = unit;
     }
 
     public String getCity() {
@@ -22,5 +22,14 @@ public class WeatherRequest {
         return country;
     }
 
-    public String getFormat() { return format; }
+    public String getUnit() { return unit; }
+
+    @Override
+    public String toString() {
+        return "WeatherRequest{" +
+                "city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", format='" + unit + '\'' +
+                '}';
+    }
 }

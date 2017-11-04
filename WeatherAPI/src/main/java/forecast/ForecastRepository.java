@@ -1,5 +1,8 @@
 package forecast;
 
+import consoleReader.ConsoleReader;
+import fileReader.FileReader;
+import fileWriter.FileWriter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -31,7 +34,7 @@ public class ForecastRepository {
                 .setPath("/data/2.5/forecast")
                 .addParameter("q", weatherRequest.getCity() + "," + weatherRequest.getCountry())
                 .addParameter("APPID", APIKey)
-                .addParameter("units", weatherRequest.getFormat());
+                .addParameter("units", weatherRequest.getUnit());
         URL url = null;
         try {
             url = builder.build().toURL();
@@ -41,7 +44,7 @@ public class ForecastRepository {
         return url.toString();
     }
 
-    public JSONObject makeForecastRequest(WeatherRequest weatherRequest) {
+    public JSONObject makeForecastRequestAndReturnResponseInJson(WeatherRequest weatherRequest) {
         String url = buildForecastURL(weatherRequest);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpRequest = new HttpGet(url);
@@ -62,7 +65,7 @@ public class ForecastRepository {
     }
 
     public ForecastReport makeJSONResponseIntoForecastReport(WeatherRequest weatherRequest){
-        JSONObject forecastReportInJason = makeForecastRequest(weatherRequest);
+        JSONObject forecastReportInJason = makeForecastRequestAndReturnResponseInJson(weatherRequest);
         JSONObject cityObject = (JSONObject) forecastReportInJason.get("city");
         JSONObject coord = (JSONObject) cityObject.get("coord");
         double latitude = (double) coord.get("lat");
@@ -101,6 +104,21 @@ public class ForecastRepository {
         }
         ForecastOneDayReport singleDayReport = new ForecastOneDayReport(previousMaxTemp, previousMinTemp);
         return singleDayReport;
+    }
+
+    public void writeJSONResponseIntoFile(JSONObject jsonObject, String filename) {
+        FileWriter fileWriter = new FileWriter();
+        fileWriter.writeJsonToFile(jsonObject, filename);
+    }
+
+    public WeatherRequest getWeatherRequestFromConsole() {
+        ConsoleReader consoleReader = new ConsoleReader();
+        return consoleReader.buildWeatherRequestFromConsoleInput();
+    }
+
+    public WeatherRequest getWeatherRequestFromFile(String filename) {
+        FileReader fileReader = new FileReader();
+        return fileReader.readInputFromFile(filename);
     }
 
 }
