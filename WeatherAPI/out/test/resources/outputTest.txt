@@ -1,1 +1,1 @@
-{"country":"EE","unit":"metric","city":"Tallinn"}
+{"city":"Tallinn","raining?":"always"}

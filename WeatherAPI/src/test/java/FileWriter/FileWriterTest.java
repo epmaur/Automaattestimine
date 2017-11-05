@@ -14,25 +14,23 @@ import static org.junit.Assert.assertNotEquals;
 
 public class FileWriterTest {
     private FileWriter fileWriter;
-    private JSONObject weatherReportInJson;
+    private JSONObject responseInJson;
     private String filename;
     private String city;
-    private String countryCode;
-    private String unit;
+    private String raining;
 
 
     public void initObjects() {
         fileWriter = new FileWriter();
-        weatherReportInJson = new JSONObject();
-        weatherReportInJson.put("city", "Tallinn");
-        weatherReportInJson.put("country", "EE");
-        weatherReportInJson.put("unit", "metric");
+        responseInJson = new JSONObject();
+        responseInJson.put("city", "Tallinn");
+        responseInJson.put("raining?", "always");
         filename = "outputTest.txt";
     }
 
 
     public void writeObjectToFile() {
-        fileWriter.writeJsonToFile(weatherReportInJson, filename);
+        fileWriter.writeJsonToFile(responseInJson, filename);
     }
 
 
@@ -41,8 +39,7 @@ public class FileWriterTest {
         java.io.FileReader fileReader = new java.io.FileReader(getClass().getClassLoader().getResource(filename).getFile());
         JSONObject inputFile = (JSONObject) parser.parse(fileReader);
         city = (String) inputFile.get("city");
-        countryCode = (String) inputFile.get("country");
-        unit = (String) inputFile.get("unit");
+        raining = (String) inputFile.get("raining?");
     }
 
     @Before
@@ -58,28 +55,19 @@ public class FileWriterTest {
     }
 
     @Test
-    public void testIfFileContainsCountryCodeKey() {
-        assertNotEquals(null, countryCode);
-    }
-
-    @Test
-    public void testIfFileContainsUnitKey() {
-        assertNotEquals(null, unit);
+    public void testIfFileContainsRainingKey() {
+        assertNotEquals(null, raining);
     }
 
 
     @Test
     public void testIfFileContainsCorrectCity() {
-        assertEquals(weatherReportInJson.get("city"), city);
+        assertEquals(responseInJson.get("city"), city);
     }
 
     @Test
-    public void testIfFileContainsCorrectCountryCode() {
-        assertEquals(weatherReportInJson.get("country"), countryCode);
+    public void testIfFileContainsCorrectResponseToRainingQuestion() {
+        assertEquals(responseInJson.get("raining?"), raining);
     }
 
-    @Test
-    public void testIfFileContainsCorrectUnit() {
-        assertEquals(weatherReportInJson.get("unit"), unit);
-    }
 }
