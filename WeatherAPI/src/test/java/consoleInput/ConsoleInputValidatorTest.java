@@ -1,12 +1,11 @@
-package consoleReader;
-
+package consoleInput;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+public class ConsoleInputValidatorTest {
 
-public class consoleReaderTest {
-    private ConsoleReader consoleReader;
+    private ConsoleInputValidator consoleInputValidator;
     private String correctCityName;
     private String incorrectCityName;
     private String correctCountryCode;
@@ -16,7 +15,7 @@ public class consoleReaderTest {
 
     @Before
     public void initObjects() {
-        consoleReader = new ConsoleReader();
+        consoleInputValidator = new ConsoleInputValidator();
         correctCityName = "Tallinn";
         incorrectCityName = "T4llinn";
         correctCountryCode = "EE";
@@ -27,38 +26,32 @@ public class consoleReaderTest {
 
     @Test
     public void testCityValidatorWithCorrectCityName() {
-        assertEquals(true, consoleReader.isValidCity(correctCityName));
+        assertEquals(true, consoleInputValidator.isValidCity(correctCityName));
     }
 
     @Test
     public void testCityValidatorWithIncorrectCityName() {
-        assertEquals(false, consoleReader.isValidCity(incorrectCityName));
+        assertEquals(false, consoleInputValidator.isValidCity(incorrectCityName));
     }
 
     @Test
     public void testCountryValidatorWithCorrectCountryCode() {
-        assertEquals(true, consoleReader.isValidCountryCode(correctCountryCode));
+        assertEquals(true, consoleInputValidator.isValidCountryCode(correctCountryCode));
     }
 
     @Test
     public void testCountryValidatorWithIncorrectCountryCode() {
-        assertEquals(false, consoleReader.isValidCountryCode(incorrectCountryCode));
+        assertEquals(false, consoleInputValidator.isValidCountryCode(incorrectCountryCode));
     }
 
     @Test
     public void testUnitValidatorWithCorrectUnit() {
-        assertEquals(true, consoleReader.isValidUnit(correctUnit));
+        assertEquals(true, consoleInputValidator.isValidUnit(correctUnit));
     }
 
     @Test
     public void testUnitValidatorWithIncorrectUnit() {
-        assertEquals(false, consoleReader.isValidUnit(incorrectUnit));
+        assertEquals(false, consoleInputValidator.isValidUnit(incorrectUnit));
     }
-
-
-
-
-
-
 
 }

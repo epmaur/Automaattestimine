@@ -1,38 +1,42 @@
 package fileReader;
 
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import weatherRequest.WeatherRequest;
 
 import static org.junit.Assert.assertEquals;
 
 public class FileReaderTest {
     private FileReader fileReader;
     private String filename;
-    private WeatherRequest weatherRequest;
-    private WeatherRequest weatherRequestFromFile;
+    private JSONObject fileContent;
+    private String city;
+    private String countryCode;
+    private String units;
 
     @Before
     public void initObjects() {
         fileReader = new FileReader();
         filename = "inputTest.txt";
-        weatherRequest = new WeatherRequest("Tallinn", "EE", "metric");
-        weatherRequestFromFile = fileReader.readInputFromFile(filename);
+        city = "Tallinn";
+        countryCode = "EE";
+        units = "metric";
+        fileContent = fileReader.readInputFromFile(filename);
     }
 
     @Test
     public void testIfWeatherRequestCityNameMatches() {
-        assertEquals(weatherRequest.getCity(), weatherRequestFromFile.getCity());
+        assertEquals(city, fileContent.get("city"));
     }
 
     @Test
     public void testIfWeatherRequestCountryMatches() {
-        assertEquals(weatherRequest.getCountry(), weatherRequestFromFile.getCountry());
+        assertEquals(countryCode, fileContent.get("countryCode"));
     }
 
     @Test
     public void testIfWeatherRequestUnitMatches() {
-        assertEquals(weatherRequest.getUnit(), weatherRequestFromFile.getUnit());
+        assertEquals(units, fileContent.get("units"));
     }
 
 }

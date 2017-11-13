@@ -1,7 +1,7 @@
 package utilities;
 
-import currentWeather.CurrentWeatherRepository;
-import forecast.ForecastRepository;
+import currentWeather.CurrentWeatherFactory;
+import forecast.ForecastFactory;
 import org.junit.Before;
 import org.junit.Test;
 import weatherRequest.WeatherRequest;
@@ -13,9 +13,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class HttpUtilitiesTest {
     private WeatherRequest weatherRequest;
-    private CurrentWeatherRepository currentWeatherRepository;
+    private CurrentWeatherFactory currentWeatherFactory;
     private String currentWeatherUrl;
-    private ForecastRepository forecastRepository;
+    private ForecastFactory forecastFactory;
     private String forecastUrl;
     private HttpUtilities httpUtilities;
 
@@ -23,10 +23,10 @@ public class HttpUtilitiesTest {
     @Before
     public void initObjects() {
         weatherRequest = new WeatherRequest("Tallinn", "EE", "metric");
-        currentWeatherRepository = new CurrentWeatherRepository();
-        currentWeatherUrl =currentWeatherRepository.buildCurrentWeatherURL(weatherRequest);
-        forecastRepository = new ForecastRepository();
-        forecastUrl = forecastRepository.buildForecastURL(weatherRequest);
+        currentWeatherFactory = new CurrentWeatherFactory();
+        currentWeatherUrl = currentWeatherFactory.buildCurrentWeatherURL(weatherRequest);
+        forecastFactory = new ForecastFactory();
+        forecastUrl = forecastFactory.buildForecastURL(weatherRequest);
         httpUtilities = new HttpUtilities();
     }
 
@@ -39,5 +39,6 @@ public class HttpUtilitiesTest {
     public void testIfWeatherForecastResponseStatusCodeIsOK() {
         assertEquals(200, httpUtilities.getResponseStatusCode(forecastUrl));
     }
+
 
 }
