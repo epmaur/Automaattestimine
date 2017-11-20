@@ -60,7 +60,7 @@ public class ForecastFactory {
         return jsonObject;
     }
 
-    public ForecastReport makeJSONResponseIntoForecastReport(JSONObject jsonObject){
+    public ForecastReport makeWeatherRequestAndReturnResponseAsForecastReport(JSONObject jsonObject) {
         JSONObject forecastReportInJson = makeForecastRequestAndReturnResponseInJson(jsonObject);
         JSONObject cityObject = (JSONObject) forecastReportInJson.get("city");
         JSONObject coord = (JSONObject) cityObject.get("coord");
@@ -74,6 +74,7 @@ public class ForecastFactory {
         ForecastReport forecastReport = new ForecastReport(cityName, country, longitude, latitude, dayOne, dayTwo, dayThree);
         return forecastReport;
     }
+
 
     public ForecastOneDayReport makeSingleDayReport (JSONObject forecastObject, int day) {
         int dayOfMonthToday = (new Timestamp(System.currentTimeMillis())).toLocalDateTime().getDayOfMonth();
@@ -116,5 +117,6 @@ public class ForecastFactory {
         String units = (String) jsonObject.get("units");
         return new WeatherRequest(city, countryCode, units);
     }
+
 
 }

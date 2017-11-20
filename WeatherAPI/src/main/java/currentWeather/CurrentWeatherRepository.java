@@ -22,5 +22,9 @@ public class CurrentWeatherRepository {
         }
     }
 
+    public static void main(String[] args) {
+        CurrentWeatherRepository repository = new CurrentWeatherRepository();
+        repository.getWeather("file");
+    }
 
 }

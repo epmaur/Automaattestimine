@@ -1,20 +1,29 @@
 package fileWriter;
 
-import org.json.simple.JSONObject;
-
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.WRITE;
 
 public class FileWriter {
 
 
-    public void writeJsonToFile(JSONObject jsonObject, String filename) {
-        try {
-            Files.write(Paths.get(getClass().getClassLoader().getResource(filename).getPath()), jsonObject.toString().getBytes(), StandardOpenOption.WRITE);
+    public void writeObjectToFile(Object report, String filename) {
+        byte data[] = report.toString().getBytes();
+        byte newLine[] = "\n".getBytes();
+        Path path = Paths.get(filename);
+        try (OutputStream outputStream = new BufferedOutputStream(
+                Files.newOutputStream(path, CREATE, APPEND))){
+            outputStream.write(data, 0, data.length);
+            outputStream.write(newLine, 0, newLine.length);
 
-        } catch (IOException e) {
+            } catch (IOException e) {
             e.printStackTrace();
         }
     }

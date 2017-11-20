@@ -1,6 +1,8 @@
-{
-  "city": "Tallinn",
-  "countryCode": "EE",
-  "units": "metric"
+[
+    {
+      "city": "Tallinn",
+      "countryCode": "EE",
+      "units": "metric"
 
-}
+    }
+]

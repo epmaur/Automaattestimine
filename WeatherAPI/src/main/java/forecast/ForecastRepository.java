@@ -22,4 +22,9 @@ public class ForecastRepository {
         }
     }
 
+    public static void main(String[] args) {
+        ForecastRepository repository = new ForecastRepository();
+        repository.getWeather("file");
+    }
+
 }

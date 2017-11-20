@@ -19,20 +19,6 @@ import java.net.URL;
 public class CurrentWeatherFactory {
     public static final String APIKey = "24f99e919834ab7ccbf49162e4fc38a4";
 
-    public JSONObject buildJSONObjectFromParameters(String city, String countryCode, String units) {
-        JSONObject object = new JSONObject();
-        object.put("city", city);
-        object.put("countryCode", countryCode);
-        object.put("units", units);
-        return object;
-    }
-
-    public WeatherRequest buildWeatherRequestFromJSON(JSONObject jsonObject) {
-        String city = (String) jsonObject.get("city");
-        String countryCode = (String) jsonObject.get("countryCode");
-        String units = (String) jsonObject.get("units");
-        return new WeatherRequest(city, countryCode, units);
-    }
 
     public String buildCurrentWeatherURL(WeatherRequest request) {
         URIBuilder builder = new URIBuilder()
@@ -72,7 +58,8 @@ public class CurrentWeatherFactory {
         return jsonObject;
     }
 
-    public CurrentWeatherReport makeJSONResponseIntoWeatherReport(JSONObject weatherReportInJson) {
+    public CurrentWeatherReport makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(JSONObject json) {
+        JSONObject weatherReportInJson = makeCurrentWeatherRequestAndReturnResponseInJson(json);
         JSONObject sys = (JSONObject) weatherReportInJson.get("sys");
         JSONObject main = (JSONObject) weatherReportInJson.get("main");
         JSONObject coord = (JSONObject) weatherReportInJson.get("coord");
@@ -83,6 +70,21 @@ public class CurrentWeatherFactory {
         double latitude = (double) coord.get("lat");
         CurrentWeatherReport currentWeatherReport = new CurrentWeatherReport(city, country, temp, latitude, longitude);
         return currentWeatherReport;
+    }
+
+    public JSONObject buildWeatherRequestAsJSONObjectFromParameters(String city, String countryCode, String units) {
+        JSONObject object = new JSONObject();
+        object.put("city", city);
+        object.put("countryCode", countryCode);
+        object.put("units", units);
+        return object;
+    }
+
+    public WeatherRequest buildWeatherRequestFromJSON(JSONObject jsonObject) {
+        String city = (String) jsonObject.get("city");
+        String countryCode = (String) jsonObject.get("countryCode");
+        String units = (String) jsonObject.get("units");
+        return new WeatherRequest(city, countryCode, units);
     }
 
 

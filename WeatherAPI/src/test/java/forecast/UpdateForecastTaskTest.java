@@ -4,6 +4,8 @@ import consoleInput.ConsoleInputReader;
 import consoleInput.ConsoleInputValidator;
 import fileReader.FileReader;
 import fileWriter.FileWriter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +22,9 @@ public class UpdateForecastTaskTest {
     private ConsoleInputValidator validator;
     private FileWriter fileWriter;
     private FileReader fileReader;
+    private JSONArray jsonArray;
+    private JSONObject jsonObject;
+    private int numberOfCitiesInInputFile;
 
     @Before
     public void initObjects() {
@@ -28,10 +33,17 @@ public class UpdateForecastTaskTest {
         validator = mock(ConsoleInputValidator.class);
         fileWriter = mock(FileWriter.class);
         fileReader = mock(FileReader.class);
+        jsonObject = new JSONObject();
+        jsonObject.put("randomKey", "randomValue");
+        jsonArray = new JSONArray();
+        jsonArray.add(jsonObject);
         updateForecastTask = new UpdateForecastTask(factory, fileWriter, consoleInputReader, validator, fileReader);
         when(validator.isValidCity(anyString())).thenReturn(true);
         when(validator.isValidCountryCode(anyString())).thenReturn(true);
         when(validator.isValidUnit(anyString())).thenReturn(true);
+        when(fileReader.readInputFromFile(anyString())).thenReturn(jsonArray);
+        numberOfCitiesInInputFile = jsonArray.size();
+
     }
 
     @Test
@@ -76,7 +88,7 @@ public class UpdateForecastTaskTest {
     @Test
     public void testIfReadFromConsoleAndWriteToFileCallsWriteToFileMethod() {
         updateForecastTask.getUserInputFromConsoleAndWriteResponseToFile();
-        verify(fileWriter, times(1)).writeJsonToFile(anyObject(), anyString());
+        verify(fileWriter, times(1)).writeObjectToFile(anyObject(), anyString());
     }
 
     @Test
@@ -88,12 +100,12 @@ public class UpdateForecastTaskTest {
     @Test
     public void testIfReadFromFileAndWriteToFileCallsWeatherRequestMethod() {
         updateForecastTask.getUserInputFromFileAndWriteResponseToFile();
-        verify(factory, times(1)).makeForecastRequestAndReturnResponseInJson(anyObject());
+        verify(factory, times(numberOfCitiesInInputFile)).makeWeatherRequestAndReturnResponseAsForecastReport(anyObject());
     }
 
     @Test
     public void testIfReadFromFileAndWriteToFileCallsWriteToFileMethod() {
         updateForecastTask.getUserInputFromFileAndWriteResponseToFile();
-        verify(fileWriter, times(1)).writeJsonToFile(anyObject(), anyString());
+        verify(fileWriter, times(numberOfCitiesInInputFile)).writeObjectToFile(anyObject(), anyString());
     }
 }

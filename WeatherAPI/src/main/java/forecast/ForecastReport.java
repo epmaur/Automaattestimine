@@ -50,4 +50,16 @@ public class ForecastReport {
         return dayThree;
     }
 
+    @Override
+    public String toString() {
+        return "ForecastReport{" +
+                "city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", dayOne=" + dayOne +
+                ", dayTwo=" + dayTwo +
+                ", dayThree=" + dayThree +
+                '}';
+    }
 }

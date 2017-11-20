@@ -30,7 +30,7 @@ public class FileWriterTest {
 
 
     public void writeObjectToFile() {
-        fileWriter.writeJsonToFile(responseInJson, filename);
+        fileWriter.writeObjectToFile(responseInJson, filename);
     }
 
 

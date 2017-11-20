@@ -14,10 +14,11 @@ import static org.junit.Assert.assertNotEquals;
 public class CurrentWeatherFactoryTest {
     private CurrentWeatherFactory currentWeatherFactory;
     private CurrentWeatherReport currentWeatherReport;
+    private WeatherRequest weatherRequest;
     private String city;
     private String countryCode;
     private String units;
-    private JSONObject jsonObject;
+    private JSONObject requestJson;
 
 
     @Before
@@ -25,41 +26,34 @@ public class CurrentWeatherFactoryTest {
         city = "Tallinn";
         countryCode = "EE";
         units = "metric";
-        jsonObject = new JSONObject();
-        jsonObject.put("city", city);
-        jsonObject.put("countryCode", countryCode);
-        jsonObject.put("units", units);
+        requestJson = new JSONObject();
+        requestJson.put("city", city);
+        requestJson.put("countryCode", countryCode);
+        requestJson.put("units", units);
+        weatherRequest = new WeatherRequest(city, countryCode, units);
         currentWeatherFactory = new CurrentWeatherFactory();
-        JSONObject response = currentWeatherFactory.makeCurrentWeatherRequestAndReturnResponseInJson(jsonObject);
-        currentWeatherReport = currentWeatherFactory.makeJSONResponseIntoWeatherReport(response);
+
+        currentWeatherReport = currentWeatherFactory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(requestJson);
     }
 
     @Test
-    public void testIfJSONObjectBuilderMakesCorrectObject() {
-        assertEquals(jsonObject, currentWeatherFactory.buildJSONObjectFromParameters(city,countryCode, units));
+    public void testIfBuilderMakesCorrectURL() {
+        String correctUrl = "http://api.openweathermap.org/data/2.5/weather?q=Tallinn%2CEE&APPID=24f99e919834ab7ccbf49162e4fc38a4&units=metric";
+        assertEquals(correctUrl, currentWeatherFactory.buildCurrentWeatherURL(weatherRequest));
     }
 
     @Test
-    public void testIfBuilderMakesCorrectWeatherRequestFromJSONObject() {
-        WeatherRequest weatherRequestFromJSON = currentWeatherFactory.buildWeatherRequestFromJSON(jsonObject);
-        assertEquals(jsonObject.get("city"), weatherRequestFromJSON.getCity());
-        assertEquals(jsonObject.get("countryCode"), weatherRequestFromJSON.getCountry());
-        assertEquals(jsonObject.get("units"), weatherRequestFromJSON.getUnit());
-    }
-
-
-    @Test
-    public void testIfResponseCityMatchesRequestCity() {
-        assertEquals(jsonObject.get("city"), currentWeatherReport.getCity());
+    public void testIfResponseReportCityMatchesRequestCity() {
+        assertEquals(requestJson.get("city"), currentWeatherReport.getCity());
     }
 
     @Test
-    public void testIfResponseCountryMatchesRequestCountry() {
-        assertEquals(jsonObject.get("countryCode"), currentWeatherReport.getCountry());
+    public void testIfResponseReportCountryMatchesRequestCountry() {
+        assertEquals(requestJson.get("countryCode"), currentWeatherReport.getCountry());
     }
 
     @Test
-    public void testIfResponseContainsCoordinates() {
+    public void testIfResponseReportContainsCoordinates() {
         assertNotEquals(null, currentWeatherReport.getLatitude());
         assertNotEquals(null, currentWeatherReport.getLongitude());
     }
@@ -82,6 +76,20 @@ public class CurrentWeatherFactoryTest {
         boolean temperatureIsValid = currentWeatherReport.getTemp() > -100 && currentWeatherReport.getTemp() < 100;
         assertEquals(true, temperatureIsValid);
     }
+
+    @Test
+    public void testIfJSONObjectBuilderMakesCorrectObject() {
+        assertEquals(requestJson, currentWeatherFactory.buildWeatherRequestAsJSONObjectFromParameters(city,countryCode, units));
+    }
+
+    @Test
+    public void testIfBuilderMakesCorrectWeatherRequestFromJSONObject() {
+        WeatherRequest weatherRequestFromJSON = currentWeatherFactory.buildWeatherRequestFromJSON(requestJson);
+        assertEquals(requestJson.get("city"), weatherRequestFromJSON.getCity());
+        assertEquals(requestJson.get("countryCode"), weatherRequestFromJSON.getCountry());
+        assertEquals(requestJson.get("units"), weatherRequestFromJSON.getUnit());
+    }
+
 
 
 }

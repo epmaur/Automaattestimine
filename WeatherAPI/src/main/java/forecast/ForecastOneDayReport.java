@@ -20,4 +20,11 @@ public class ForecastOneDayReport {
         return minTemp;
     }
 
+    @Override
+    public String toString() {
+        return "ForecastOneDayReport{" +
+                "maxTemp=" + maxTemp +
+                ", minTemp=" + minTemp +
+                '}';
+    }
 }

@@ -4,6 +4,7 @@ import consoleInput.ConsoleInputReader;
 import consoleInput.ConsoleInputValidator;
 import fileReader.FileReader;
 import fileWriter.FileWriter;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.Scanner;
@@ -64,17 +65,22 @@ public class UpdateCurrentWeatherTask {
                 System.out.println("Not a valid unit Try again");
             }
         }
-        JSONObject userInput = factory.buildJSONObjectFromParameters(city, countryCode, units);
-        JSONObject currentWeatherInJSON = factory.makeCurrentWeatherRequestAndReturnResponseInJson(userInput);
-        writer.writeJsonToFile(currentWeatherInJSON, "output.txt");
+        JSONObject userInput = factory.buildWeatherRequestAsJSONObjectFromParameters(city, countryCode, units);
+        CurrentWeatherReport report = factory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(userInput);
+        writer.writeObjectToFile(report, "output.txt");
 
 
     }
 
     public void getUserInputFromFileAndWriteResponseToFile() {
-        JSONObject userInput = reader.readInputFromFile("input.txt");
-        JSONObject weatherResponse = factory.makeCurrentWeatherRequestAndReturnResponseInJson(userInput);
-        writer.writeJsonToFile(weatherResponse, "output.txt");
+        JSONArray userInput = reader.readInputFromFile("input.txt");
+        for (int i = 0; i < userInput.size(); i++) {
+            JSONObject line = (JSONObject) userInput.get(i);
+            CurrentWeatherReport report = factory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(line);
+            String city = (String) line.get("city");
+            writer.writeObjectToFile(report, city + ".txt");
+        }
     }
+
 
 }

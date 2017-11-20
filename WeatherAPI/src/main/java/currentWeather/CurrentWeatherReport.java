@@ -38,4 +38,14 @@ public class CurrentWeatherReport {
         return longitude;
     }
 
+    @Override
+    public String toString() {
+        return "CurrentWeatherReport{" +
+                "city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", temp=" + temp +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }
