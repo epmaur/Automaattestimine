@@ -1,0 +1,3 @@
+CurrentWeatherReport{city='Tallinn', country='EE', temp=3.0, latitude=59.44, longitude=24.75}
+CurrentWeatherReport{city='Tallinn', country='EE', temp=3.0, latitude=59.44, longitude=24.75}
+CurrentWeatherReport{city='Tartu', country='EE', temp=2.0, latitude=58.38, longitude=26.73}

@@ -11,15 +11,15 @@ import java.util.Scanner;
 
 public class UpdateForecastTask {
 
-    private ForecastFactory factory;
+    private ForecastRepository repository;
     private FileWriter writer;
     private ConsoleInputReader consoleInputReader;
     private ConsoleInputValidator consoleInputValidator;
     private FileReader reader;
 
-    public UpdateForecastTask(ForecastFactory factory, FileWriter writer, ConsoleInputReader consoleInputReader,
+    public UpdateForecastTask(ForecastRepository repository , FileWriter writer, ConsoleInputReader consoleInputReader,
                               ConsoleInputValidator consoleInputValidator, FileReader reader) {
-        this.factory = factory;
+        this.repository = repository;
         this.writer = writer;
         this.consoleInputReader = consoleInputReader;
         this.consoleInputValidator = consoleInputValidator;
@@ -27,7 +27,7 @@ public class UpdateForecastTask {
     }
 
     public UpdateForecastTask() {
-        factory = new ForecastFactory();
+        repository = new ForecastRepository();
         writer = new FileWriter();
         consoleInputReader = new ConsoleInputReader();
         consoleInputValidator = new ConsoleInputValidator();
@@ -67,8 +67,8 @@ public class UpdateForecastTask {
                 System.out.println("Not a valid unit Try again");
             }
         }
-        JSONObject userInput = factory.buildJSONObjectFromParameters(city, countryCode, units);
-        ForecastReport report = factory.makeWeatherRequestAndReturnResponseAsForecastReport(userInput);
+
+        ForecastReport report = repository.getWeather(city, countryCode, units);
         writer.writeObjectToFile(report, "output.txt");
 
 
@@ -78,8 +78,10 @@ public class UpdateForecastTask {
         JSONArray userInput = reader.readInputFromFile("input.txt");
         for (int i = 0; i < userInput.size(); i++) {
             JSONObject line = (JSONObject) userInput.get(i);
-            ForecastReport report = factory.makeWeatherRequestAndReturnResponseAsForecastReport(line);
             String city = (String) line.get("city");
+            String country = (String) line.get("countryCode");
+            String units = (String) line.get("units");
+            ForecastReport report = repository.getWeather(city, country, units);
             writer.writeObjectToFile(report, city + ".txt");
         }
     }

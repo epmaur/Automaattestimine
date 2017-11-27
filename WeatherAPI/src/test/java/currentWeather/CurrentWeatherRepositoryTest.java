@@ -9,26 +9,26 @@ import static org.mockito.Mockito.*;
  * Created by Epu on 28.09.2017.
  */
 public class CurrentWeatherRepositoryTest {
-    private UpdateCurrentWeatherTask updateCurrentWeatherTask;
     private CurrentWeatherRepository currentWeatherRepository;
+    private CurrentWeatherRequestFactory factory;
+
 
     @Before
     public void initObjects() {
-        updateCurrentWeatherTask = mock(UpdateCurrentWeatherTask.class);
-        currentWeatherRepository = new CurrentWeatherRepository(updateCurrentWeatherTask);
+        factory = mock(CurrentWeatherRequestFactory.class);
+        currentWeatherRepository = new CurrentWeatherRepository(factory);
     }
 
     @Test
-    public void testIfGetWeatherWithOptionConsoleCallsGetInputFromConsoleAndWriteToFileMethod() {
-        currentWeatherRepository.getWeather("console");
-        verify(updateCurrentWeatherTask, times(1)).getUserInputFromConsoleAndWriteResponseToFile();
+    public void testIfGetWeatherCallsJsonObjectBuilderMethod() {
+        currentWeatherRepository.getWeather("Tallinn", "EE", "metric");
+        verify(factory, times(1)).buildWeatherRequestAsJSONObjectFromParameters(anyString(),anyString(), anyString());
     }
 
     @Test
-    public void testIfGetWeatherWithOptionFileCallsGetInputFromFileAndWriteToFileMethod() {
-        currentWeatherRepository.getWeather("file");
-        verify(updateCurrentWeatherTask, times(1)).getUserInputFromFileAndWriteResponseToFile();
+    public void testIfGetWeatherCallsMakeWeatherRequestMethod() {
+        currentWeatherRepository.getWeather("Tallinn", "EE", "metric");
+        verify(factory, times(1)).makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(anyObject());
     }
-
 
 }

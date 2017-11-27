@@ -11,15 +11,14 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class CurrentWeatherFactoryTest {
-    private CurrentWeatherFactory currentWeatherFactory;
+public class CurrentWeatherOnlineResponseTest {
+    private CurrentWeatherRequestFactory currentWeatherRequestFactory;
     private CurrentWeatherReport currentWeatherReport;
     private WeatherRequest weatherRequest;
     private String city;
     private String countryCode;
     private String units;
     private JSONObject requestJson;
-
 
     @Before
     public void initObjects() throws IOException, ParseException {
@@ -31,15 +30,9 @@ public class CurrentWeatherFactoryTest {
         requestJson.put("countryCode", countryCode);
         requestJson.put("units", units);
         weatherRequest = new WeatherRequest(city, countryCode, units);
-        currentWeatherFactory = new CurrentWeatherFactory();
+        currentWeatherRequestFactory = new CurrentWeatherRequestFactory();
 
-        currentWeatherReport = currentWeatherFactory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(requestJson);
-    }
-
-    @Test
-    public void testIfBuilderMakesCorrectURL() {
-        String correctUrl = "http://api.openweathermap.org/data/2.5/weather?q=Tallinn%2CEE&APPID=24f99e919834ab7ccbf49162e4fc38a4&units=metric";
-        assertEquals(correctUrl, currentWeatherFactory.buildCurrentWeatherURL(weatherRequest));
+        currentWeatherReport = currentWeatherRequestFactory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(requestJson);
     }
 
     @Test
@@ -76,20 +69,4 @@ public class CurrentWeatherFactoryTest {
         boolean temperatureIsValid = currentWeatherReport.getTemp() > -100 && currentWeatherReport.getTemp() < 100;
         assertEquals(true, temperatureIsValid);
     }
-
-    @Test
-    public void testIfJSONObjectBuilderMakesCorrectObject() {
-        assertEquals(requestJson, currentWeatherFactory.buildWeatherRequestAsJSONObjectFromParameters(city,countryCode, units));
-    }
-
-    @Test
-    public void testIfBuilderMakesCorrectWeatherRequestFromJSONObject() {
-        WeatherRequest weatherRequestFromJSON = currentWeatherFactory.buildWeatherRequestFromJSON(requestJson);
-        assertEquals(requestJson.get("city"), weatherRequestFromJSON.getCity());
-        assertEquals(requestJson.get("countryCode"), weatherRequestFromJSON.getCountry());
-        assertEquals(requestJson.get("units"), weatherRequestFromJSON.getUnit());
-    }
-
-
-
 }

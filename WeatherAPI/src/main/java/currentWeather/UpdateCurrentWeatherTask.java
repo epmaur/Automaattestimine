@@ -10,27 +10,27 @@ import org.json.simple.JSONObject;
 import java.util.Scanner;
 
 public class UpdateCurrentWeatherTask {
-    private CurrentWeatherFactory factory = new CurrentWeatherFactory();
     private FileWriter writer = new FileWriter();
     private ConsoleInputReader consoleInputReader = new ConsoleInputReader();
     private ConsoleInputValidator consoleInputValidator = new ConsoleInputValidator();
     private FileReader reader = new FileReader();
+    private CurrentWeatherRepository currentWeatherRepository;
 
-    public UpdateCurrentWeatherTask(CurrentWeatherFactory factory, FileWriter writer, ConsoleInputReader consoleInputReader,
-                                    ConsoleInputValidator consoleInputValidator, FileReader reader) {
-        this.factory = factory;
+    public UpdateCurrentWeatherTask(FileWriter writer, ConsoleInputReader consoleInputReader,
+                                    ConsoleInputValidator consoleInputValidator, FileReader reader, CurrentWeatherRepository currentWeatherRepository) {
         this.writer = writer;
         this.consoleInputReader = consoleInputReader;
         this.consoleInputValidator = consoleInputValidator;
         this.reader = reader;
+        this.currentWeatherRepository = currentWeatherRepository;
     }
 
     public UpdateCurrentWeatherTask() {
-        factory = new CurrentWeatherFactory();
         writer = new FileWriter();
         consoleInputReader = new ConsoleInputReader();
         consoleInputValidator = new ConsoleInputValidator();
         reader = new FileReader();
+        currentWeatherRepository = new CurrentWeatherRepository();
     }
 
     public void getUserInputFromConsoleAndWriteResponseToFile() {
@@ -65,8 +65,7 @@ public class UpdateCurrentWeatherTask {
                 System.out.println("Not a valid unit Try again");
             }
         }
-        JSONObject userInput = factory.buildWeatherRequestAsJSONObjectFromParameters(city, countryCode, units);
-        CurrentWeatherReport report = factory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(userInput);
+        CurrentWeatherReport report = currentWeatherRepository.getWeather(city, countryCode, units);
         writer.writeObjectToFile(report, "output.txt");
 
 
@@ -76,8 +75,10 @@ public class UpdateCurrentWeatherTask {
         JSONArray userInput = reader.readInputFromFile("input.txt");
         for (int i = 0; i < userInput.size(); i++) {
             JSONObject line = (JSONObject) userInput.get(i);
-            CurrentWeatherReport report = factory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(line);
             String city = (String) line.get("city");
+            String country = (String) line.get("countryCode");
+            String units = (String) line.get("units");
+            CurrentWeatherReport report = currentWeatherRepository.getWeather(city, country, units);
             writer.writeObjectToFile(report, city + ".txt");
         }
     }

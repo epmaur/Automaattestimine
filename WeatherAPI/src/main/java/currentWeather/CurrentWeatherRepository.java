@@ -1,30 +1,27 @@
 package currentWeather;
 
+import org.json.simple.JSONObject;
+import weatherRequest.WeatherRequest;
+
 /**
  * Created by Epu on 27.09.2017.
  */
 public class CurrentWeatherRepository {
-    private UpdateCurrentWeatherTask updateCurrentWeatherTask;
+    private CurrentWeatherRequestFactory factory;
 
     public CurrentWeatherRepository() {
-        updateCurrentWeatherTask = new UpdateCurrentWeatherTask();
+        factory = new CurrentWeatherRequestFactory();
     }
 
-    public CurrentWeatherRepository(UpdateCurrentWeatherTask updateCurrentWeatherTask) {
-        this.updateCurrentWeatherTask = updateCurrentWeatherTask;
+    public CurrentWeatherRepository(CurrentWeatherRequestFactory factory) {
+        this.factory = factory;
     }
 
-    public void getWeather(String option) {
-        if (option.equals("console")) {
-            updateCurrentWeatherTask.getUserInputFromConsoleAndWriteResponseToFile();
-        } else if (option.equals("file")) {
-            updateCurrentWeatherTask.getUserInputFromFileAndWriteResponseToFile();
-        }
+
+    public CurrentWeatherReport getWeather(String city, String country, String units) {
+        JSONObject request = factory.buildWeatherRequestAsJSONObjectFromParameters(city, country, units);
+        return factory.makeWeatherRequestAndReturnResponseAsCurrentWeatherReport(request);
     }
 
-    public static void main(String[] args) {
-        CurrentWeatherRepository repository = new CurrentWeatherRepository();
-        repository.getWeather("file");
-    }
 
 }

@@ -1,9 +1,10 @@
 package utilities;
 
-import currentWeather.CurrentWeatherFactory;
-import forecast.ForecastFactory;
+import currentWeather.CurrentWeatherRequestFactory;
+import forecast.ForecastWeatherRequestFactory;
 import org.junit.Before;
 import org.junit.Test;
+import urlBuilder.URLBuilder;
 import weatherRequest.WeatherRequest;
 
 import static org.junit.Assert.assertEquals;
@@ -13,20 +14,18 @@ import static org.junit.Assert.assertEquals;
  */
 public class HttpUtilitiesTest {
     private WeatherRequest weatherRequest;
-    private CurrentWeatherFactory currentWeatherFactory;
     private String currentWeatherUrl;
-    private ForecastFactory forecastFactory;
     private String forecastUrl;
     private HttpUtilities httpUtilities;
+    private URLBuilder urlBuilder;
 
 
     @Before
     public void initObjects() {
         weatherRequest = new WeatherRequest("Tallinn", "EE", "metric");
-        currentWeatherFactory = new CurrentWeatherFactory();
-        currentWeatherUrl = currentWeatherFactory.buildCurrentWeatherURL(weatherRequest);
-        forecastFactory = new ForecastFactory();
-        forecastUrl = forecastFactory.buildForecastURL(weatherRequest);
+        urlBuilder = new URLBuilder();
+        currentWeatherUrl = urlBuilder.buildURL("weather", weatherRequest.getCity(), weatherRequest.getCountry(), weatherRequest.getUnit());
+        forecastUrl = urlBuilder.buildURL("forecast", weatherRequest.getCity(), weatherRequest.getCountry(), weatherRequest.getUnit());
         httpUtilities = new HttpUtilities();
     }
 

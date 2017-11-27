@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 public class UpdateForecastTaskTest {
     private UpdateForecastTask updateForecastTask;
     private ConsoleInputReader consoleInputReader;
-    private ForecastFactory factory;
+    private ForecastRepository repository;
     private ConsoleInputValidator validator;
     private FileWriter fileWriter;
     private FileReader fileReader;
@@ -29,7 +29,7 @@ public class UpdateForecastTaskTest {
     @Before
     public void initObjects() {
         consoleInputReader = mock(ConsoleInputReader.class);
-        factory = mock(ForecastFactory.class);
+        repository = mock(ForecastRepository.class);
         validator = mock(ConsoleInputValidator.class);
         fileWriter = mock(FileWriter.class);
         fileReader = mock(FileReader.class);
@@ -37,7 +37,8 @@ public class UpdateForecastTaskTest {
         jsonObject.put("randomKey", "randomValue");
         jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
-        updateForecastTask = new UpdateForecastTask(factory, fileWriter, consoleInputReader, validator, fileReader);
+
+        updateForecastTask = new UpdateForecastTask(repository, fileWriter, consoleInputReader, validator, fileReader);
         when(validator.isValidCity(anyString())).thenReturn(true);
         when(validator.isValidCountryCode(anyString())).thenReturn(true);
         when(validator.isValidUnit(anyString())).thenReturn(true);
@@ -73,16 +74,12 @@ public class UpdateForecastTaskTest {
         verify(validator, times(1)).isValidUnit(anyString());
     }
 
-    @Test
-    public void testIfReadFromConsoleAndWriteToFileCallsJSONObjectBuilderMethod() {
-        updateForecastTask.getUserInputFromConsoleAndWriteResponseToFile();
-        verify(factory, times(1)).buildJSONObjectFromParameters(anyString(), anyString(), anyString());
-    }
+
 
     @Test
-    public void testIfReadFromConsoleAndWriteToFileCallsWeatherRequestMethod() {
+    public void testIfReadFromConsoleAndWriteToFileCallsGetForecastMethod() {
         updateForecastTask.getUserInputFromConsoleAndWriteResponseToFile();
-        verify(factory, times(1)).makeForecastRequestAndReturnResponseInJson(anyObject());
+        verify(repository, times(1)).getWeather(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -98,9 +95,9 @@ public class UpdateForecastTaskTest {
     }
 
     @Test
-    public void testIfReadFromFileAndWriteToFileCallsWeatherRequestMethod() {
+    public void testIfReadFromFileAndWriteToFileCallsGetForecastMethod(){
         updateForecastTask.getUserInputFromFileAndWriteResponseToFile();
-        verify(factory, times(numberOfCitiesInInputFile)).makeWeatherRequestAndReturnResponseAsForecastReport(anyObject());
+        verify(repository, times(numberOfCitiesInInputFile)).getWeather(anyString(), anyString(), anyString());
     }
 
     @Test

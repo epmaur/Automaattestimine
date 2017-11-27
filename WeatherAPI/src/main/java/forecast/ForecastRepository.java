@@ -1,30 +1,25 @@
 package forecast;
 
+import org.json.simple.JSONObject;
+
 /**
  * Created by Epu on 27.09.2017.
  */
 public class ForecastRepository {
-    private UpdateForecastTask forecastTask;
+    private ForecastWeatherRequestFactory factory;
 
     public ForecastRepository() {
-        forecastTask = new UpdateForecastTask();
+        factory = new ForecastWeatherRequestFactory();
     }
 
-    public ForecastRepository(UpdateForecastTask forecastTask) {
-        this.forecastTask = forecastTask;
+    public ForecastRepository(ForecastWeatherRequestFactory factory) {
+        this.factory = factory;
     }
 
-    public void getWeather(String option) {
-        if (option.equals("console")) {
-            forecastTask.getUserInputFromConsoleAndWriteResponseToFile();
-        } else if (option.equals("file")) {
-            forecastTask.getUserInputFromFileAndWriteResponseToFile();
-        }
-    }
 
-    public static void main(String[] args) {
-        ForecastRepository repository = new ForecastRepository();
-        repository.getWeather("file");
+    public ForecastReport getWeather(String city, String country, String units) {
+        JSONObject request = factory.buildJSONObjectFromParameters(city, country, units);
+        return factory.makeWeatherRequestAndReturnResponseAsForecastReport(request);
     }
 
 }

@@ -9,25 +9,27 @@ import static org.mockito.Mockito.*;
  * Created by Epu on 28.09.2017.
  */
 public class ForecastRepositoryTest {
-    private UpdateForecastTask updateForecastTask;
+    private ForecastWeatherRequestFactory factory;
     private ForecastRepository forecastRepository;
 
     @Before
     public void initObjects() {
-        updateForecastTask = mock(UpdateForecastTask.class);
-        forecastRepository = new ForecastRepository(updateForecastTask);
+        factory = mock(ForecastWeatherRequestFactory.class);
+        forecastRepository = new ForecastRepository(factory);
     }
 
     @Test
-    public void testIfGetWeatherWithOptionConsoleCallsGetInputFromConsoleAndWriteToFileMethod() {
-        forecastRepository.getWeather("console");
-        verify(updateForecastTask, times(1)).getUserInputFromConsoleAndWriteResponseToFile();
+    public void testIfGetWeatherCallsJsonObjectBuilder() {
+        forecastRepository.getWeather("Tallinn", "EE", "metric");
+        verify(factory, times(1)).buildJSONObjectFromParameters(anyString(), anyString(), anyString());
     }
 
+
     @Test
-    public void testIfGetWeatherWithOptionFileCallsGetInputFromFileAndWriteToFileMethod() {
-        forecastRepository.getWeather("file");
-        verify(updateForecastTask, times(1)).getUserInputFromFileAndWriteResponseToFile();
+    public void testIfGetWeatherCallsMakeForecastRequestMethod() {
+        forecastRepository.getWeather("Tallinn", "EE", "metric");
+        verify(factory, times(1)).makeWeatherRequestAndReturnResponseAsForecastReport(anyObject());
     }
+
 
 }

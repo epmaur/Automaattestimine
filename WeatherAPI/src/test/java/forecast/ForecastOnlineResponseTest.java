@@ -3,7 +3,7 @@ package forecast;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import weatherRequest.WeatherRequest;
+
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -11,34 +11,26 @@ import java.text.ParseException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class ForecastFactoryTest {
-    private ForecastFactory forecastFactory;
+public class ForecastOnlineResponseTest {
+    private ForecastWeatherRequestFactory forecastWeatherRequestFactory;
     private ForecastReport forecastReport;
-    private WeatherRequest weatherRequest;
     private String city;
     private String countryCode;
     private String units;
     private JSONObject jsonObject;
 
-
     @Before
     public void initObjects() throws IOException, ParseException {
-        forecastFactory = new ForecastFactory();
+        forecastWeatherRequestFactory = new ForecastWeatherRequestFactory();
         city = "Tallinn";
         countryCode = "EE";
         units = "metric";
-        weatherRequest = new WeatherRequest(city,countryCode, units);
+
         jsonObject = new JSONObject();
         jsonObject.put("city", city);
         jsonObject.put("countryCode", countryCode);
         jsonObject.put("units", units);
-        forecastReport = forecastFactory.makeWeatherRequestAndReturnResponseAsForecastReport(jsonObject);
-    }
-
-    @Test
-    public void testIfBuilderMakesCorrectURL() {
-        String correctUrl = "http://api.openweathermap.org/data/2.5/forecast?q=Tallinn%2CEE&APPID=24f99e919834ab7ccbf49162e4fc38a4&units=metric";
-        assertEquals(correctUrl, forecastFactory.buildForecastURL(weatherRequest));
+        forecastReport = forecastWeatherRequestFactory.makeWeatherRequestAndReturnResponseAsForecastReport(jsonObject);
     }
 
     @Test
@@ -139,19 +131,5 @@ public class ForecastFactoryTest {
         boolean dayThreeMinTempIsValid = forecastReport.getDayThree().getMinTemp() > -100 && forecastReport.getDayThree().getMinTemp() < 100;
         assertEquals(true, dayThreeMinTempIsValid);
     }
-
-    @Test
-    public void testIfJSONObjectBuilderMakesCorrectObject() {
-        assertEquals(jsonObject, forecastFactory.buildJSONObjectFromParameters(city,countryCode, units));
-    }
-
-    @Test
-    public void testIfBuilderMakesCorrectWeatherRequestFromJSONObject() {
-        WeatherRequest weatherRequestFromJSON = forecastFactory.buildWeatherRequestFromJSON(jsonObject);
-        assertEquals(jsonObject.get("city"), weatherRequestFromJSON.getCity());
-        assertEquals(jsonObject.get("countryCode"), weatherRequestFromJSON.getCountry());
-        assertEquals(jsonObject.get("units"), weatherRequestFromJSON.getUnit());
-    }
-
 
 }

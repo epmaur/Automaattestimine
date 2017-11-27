@@ -1,0 +1,2 @@
+CurrentWeatherReport{city='Tartu', country='EE', temp=2.0, latitude=58.38, longitude=26.73}
+CurrentWeatherReport{city='Tartu', country='EE', temp=2.0, latitude=58.38, longitude=26.73}

@@ -9,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import urlBuilder.URLBuilder;
 import weatherRequest.WeatherRequest;
 
 import java.io.IOException;
@@ -18,30 +19,20 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Timestamp;
 
-public class ForecastFactory {
+public class ForecastWeatherRequestFactory {
+    private URLBuilder urlBuilder;
 
-    public static final String APIKey = "24f99e919834ab7ccbf49162e4fc38a4";
+    public ForecastWeatherRequestFactory(URLBuilder urlBuilder) {
+        this.urlBuilder = urlBuilder;
+    }
 
-    public String buildForecastURL(WeatherRequest weatherRequest) {
-        URIBuilder builder = new URIBuilder()
-                .setScheme("http")
-                .setHost("api.openweathermap.org")
-                .setPath("/data/2.5/forecast")
-                .addParameter("q", weatherRequest.getCity() + "," + weatherRequest.getCountry())
-                .addParameter("APPID", APIKey)
-                .addParameter("units", weatherRequest.getUnit());
-        URL url = null;
-        try {
-            url = builder.build().toURL();
-        } catch (MalformedURLException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return url.toString();
+    public ForecastWeatherRequestFactory() {
+        this.urlBuilder = new URLBuilder();
     }
 
     public JSONObject makeForecastRequestAndReturnResponseInJson(JSONObject object) {
         WeatherRequest weatherRequest = buildWeatherRequestFromJSON(object);
-        String url = buildForecastURL(weatherRequest);
+        String url = urlBuilder.buildURL("forecast", weatherRequest.getCity(), weatherRequest.getCountry(), weatherRequest.getUnit());
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpRequest = new HttpGet(url);
         HttpResponse response = null;
@@ -60,8 +51,7 @@ public class ForecastFactory {
         return jsonObject;
     }
 
-    public ForecastReport makeWeatherRequestAndReturnResponseAsForecastReport(JSONObject jsonObject) {
-        JSONObject forecastReportInJson = makeForecastRequestAndReturnResponseInJson(jsonObject);
+    public ForecastReport makeForecastReportFromJsonResponse(JSONObject forecastReportInJson) {
         JSONObject cityObject = (JSONObject) forecastReportInJson.get("city");
         JSONObject coord = (JSONObject) cityObject.get("coord");
         double latitude = (double) coord.get("lat");
@@ -73,6 +63,11 @@ public class ForecastFactory {
         ForecastOneDayReport dayThree = makeSingleDayReport(forecastReportInJson, 3);
         ForecastReport forecastReport = new ForecastReport(cityName, country, longitude, latitude, dayOne, dayTwo, dayThree);
         return forecastReport;
+    }
+
+    public ForecastReport makeWeatherRequestAndReturnResponseAsForecastReport(JSONObject jsonObject) {
+        JSONObject forecastReportInJson = makeForecastRequestAndReturnResponseInJson(jsonObject);
+        return  makeForecastReportFromJsonResponse(forecastReportInJson);
     }
 
 
